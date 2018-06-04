@@ -7,18 +7,36 @@
     tools:context=".MainActivity">
 
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom">
+        android:gravity="bottom"
+        android:orientation="vertical"
+        >
+
+
 
         <Button
+            android:id="@+id/choosePoints"
             android:layout_width="match_parent"
-            android:layout_height= "wrap_content"
-            android:text="Library"
+            android:layout_height="wrap_content"
+            android:onClick="onChoosePoints"
+            android:text="Choose Points"
+            />
+
+
+
+        <Button
+            android:id="@+id/goToLibrary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:onClick="onSelectedLibrary"
-            android:id="@+id/goToLibrary"/>
+            android:text="Library"
+            />
+
+
+
     </LinearLayout>
+
 
 </android.support.constraint.ConstraintLayout>
