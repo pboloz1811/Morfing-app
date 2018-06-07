@@ -3,7 +3,6 @@ package com.com.helpers
 class Vector {
 
 
-
     lateinit var point: Point
     lateinit var normal: Vector
 

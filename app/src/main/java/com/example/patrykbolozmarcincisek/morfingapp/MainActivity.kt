@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.esafirm.imagepicker.features.ImagePicker
 import com.esafirm.imagepicker.model.Image
 import com.morphing.Morphing
+import kotlinx.coroutines.experimental.async
 
 
 class MainActivity : AppCompatActivity() {
@@ -61,6 +62,8 @@ class MainActivity : AppCompatActivity() {
         if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             selectedImages = ImagePicker.getImages(data)
             morpher = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path))
+
+
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
