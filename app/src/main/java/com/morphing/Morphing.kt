@@ -1,21 +1,17 @@
 package com.morphing
 import android.graphics.Bitmap
-import com.com.helpers.ChPoint
-import com.com.helpers.Point
-
+import com.example.patrykbolozmarcincisek.morfingapp.ChPoint
+import com.example.patrykbolozmarcincisek.morfingapp.Point
 
 class Morphing {
-
     private var firstImageBitMap: Bitmap
     private var secondImageBitMap: Bitmap
     private val width: Int
     private val height: Int
     private val lambda = 0.5
     private var targetPoints = ArrayList<ChPoint>()
-
-    private var Pp = Point(2.0f,3.0f)
-    private var Qq = Point(2.0f,3.0f)
-
+    private var Pp = Point(2.0f, 3.0f)
+    private var Qq = Point(2.0f, 3.0f)
 
     constructor(firstImage: Bitmap, secondImage: Bitmap) {
         firstImageBitMap = firstImage
@@ -45,10 +41,7 @@ class Morphing {
 
     }
 
-
     fun findCoordinates(tx: Int, ty: Int, px: Int, pz: Int, qx: Int, qz: Int) {
-
-
     }
 
     fun calculateNewImage() {
@@ -58,13 +51,7 @@ class Morphing {
         var newImage = cloneBitmap()
         for (line in 0..firstImageBitMap.height) {
             for (col in 0..firstImageBitMap.width) {
-
-
-
             }
         }
     }
-
-
-
 }

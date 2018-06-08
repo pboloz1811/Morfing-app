@@ -1,29 +1,25 @@
-package com.com.helpers
+package com.example.patrykbolozmarcincisek.morfingapp
+
+import java.util.logging.Logger
 
 class Vector {
-
-
-
     lateinit var point: Point
     lateinit var normal: Vector
 
-
     constructor(x: Float, y: Float) {
-        point = Point(x,y)
+        point = Point(x, y)
     }
 
-    constructor(pp: Point, q: Point ) {
+    constructor(pp: Point, q: Point) {
         point = Point(q.getX() - pp.getX(), q.getY() - pp.getY())
     }
 
-
     fun getX(): Float {
-        return  point.getX()
+        return point.getX()
     }
 
-
     fun getY(): Float {
-        return  point.getY()
+        return point.getY()
     }
 
     fun getNormalVector(): Vector {

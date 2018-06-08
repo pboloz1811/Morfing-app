@@ -1,7 +1,6 @@
-package com.com.helpers
+package com.example.patrykbolozmarcincisek.morfingapp
 
 class ChPoint {
-
     var px: Int = 0
     var py: Int = 0
     var qx: Int = 0
@@ -12,9 +11,4 @@ class ChPoint {
     var rpy: Double = 0.0
     var rqx: Double = 0.0
     var rqy: Double = 0.0
-
-
-
-
-
 }
