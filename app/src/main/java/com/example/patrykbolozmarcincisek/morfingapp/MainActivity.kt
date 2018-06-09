@@ -12,6 +12,7 @@ import com.esafirm.imagepicker.model.Image
 import com.morphing.Morphing
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
+import android.widget.ImageView
 import com.shared.logger.Logger
 import kotlinx.coroutines.experimental.async
 
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private var libraryButton: Button? = null
     private var choosePointsButton: Button? = null
     private var startButton: Button? = null
+    private var resultImageView: ImageView? = null
     private var selectedImages = mutableListOf<Image>()
     lateinit var morpher: Morphing
     var isActivityEnabled: Boolean? = null
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         libraryButton = findViewById(R.id.goToLibrary) as Button
         choosePointsButton = findViewById(R.id.choosePoints) as Button
         startButton = findViewById(R.id.start) as Button
+        resultImageView = findViewById(R.id.resultImageView) as ImageView
     }
 
     /* BUTTON 1 */
@@ -84,11 +87,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onStartMorphing(view: View) {
-        async {
-            Logger.log("async")
-            morpher.getNewImage()
-            Logger.log("async")
-        }
+        resultImageView?.setImageBitmap(morpher.execute().get())
     }
 
     /* DIALOG BOX */

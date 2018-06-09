@@ -1,6 +1,7 @@
 package com.morphing
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.os.AsyncTask
 import com.com.helpers.ChPoint
 import com.example.patrykbolozmarcincisek.morfingapp.Point
 import com.shared.logger.Logger
@@ -8,12 +9,12 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 
-class Morphing {
+class Morphing: AsyncTask<Void, Void, Bitmap> {
     private var firstImageBitMap: Bitmap
     private var secondImageBitMap: Bitmap
     private var firstImageWidth: Int = 0
     private var firstImageHeight: Int = 0
-    private var finalImageBitmap: Bitmap
+    var finalImageBitmap: Bitmap
     private val lambda = 0.5
     private var targetPoints = ArrayList<ChPoint>() // Punkty na obrazie docelowym obliczanie na podstawie punktów charakterystycznych dla każdego obrazka
 
@@ -65,7 +66,7 @@ class Morphing {
     }
 
 
-    suspend fun getNewImage() {
+    fun getNewImage() {
         val firstChPoint = targetPoints[0]
         val secondChPoint = targetPoints[1]
         val thirdChPoint = targetPoints[2]
@@ -80,11 +81,10 @@ class Morphing {
                 val qy = (((firstChPoint.rqi / firstDiff.pow(2)) + (secondChPoint.rqi / secondDiff.pow(2)) + (thirdChPoint.rqi / thirdDiff.pow(2))) / ((1 / firstDiff.pow(2)) + (1 / secondDiff.pow(2)) + (1 / thirdDiff.pow(2)))) + y
                 var pColor = 0
                 var qColor = 0
-                if (px.toInt() <= firstImageWidth && py.toInt() <= firstImageHeight) {
+                if (px.toInt() < firstImageWidth && py.toInt() < firstImageHeight) {
                     pColor = firstImageBitMap.getPixel(px.toInt(),py.toInt())
-
                 }
-                if (qx.toInt() <= firstImageWidth && qy.toInt() <= firstImageHeight) {
+                if (qx.toInt() < firstImageWidth && qy.toInt() < firstImageHeight) {
                     qColor = secondImageBitMap.getPixel(qx.toInt(), qy.toInt())
                 }
                 val color = (1 - lambda) * pColor + (lambda * qColor)
@@ -93,4 +93,15 @@ class Morphing {
         }
 
     }
+
+    // async
+
+    override fun doInBackground(vararg params: Void?): Bitmap {
+        Logger.log("Started background task")
+        getNewImage()
+        Logger.log("Finished do in background task")
+        return finalImageBitmap
+    }
+
+
 }

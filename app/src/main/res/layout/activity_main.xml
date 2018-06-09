@@ -15,6 +15,12 @@
         tools:layout_editor_absoluteY="66dp"
         tools:ignore="MissingConstraints">
 
+        <ImageView
+            android:id="@+id/resultImageView"
+            android:layout_width="match_parent"
+            android:layout_height="350dp" />
+
+
         <Button
             android:id="@+id/goToLibrary"
             android:layout_width="match_parent"
