@@ -25,13 +25,13 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
     constructor(firstImage: Bitmap, secondImage: Bitmap) {
 
         // Temporary hardcoded
-        firstImageCharacteristicPoints.add(Point(10.0f,12.0f))
-        firstImageCharacteristicPoints.add(Point(2.0f,5.0f))
-        firstImageCharacteristicPoints.add(Point(4.0f,8.0f))
+        firstImageCharacteristicPoints.add(Point(615.0f,366.0f))
+        firstImageCharacteristicPoints.add(Point(616.0f,398.0f))
+        firstImageCharacteristicPoints.add(Point(565.0f,367.0f))
 
-        secondImageCharacteristicPoints.add(Point(8.0f,11.0f))
-        secondImageCharacteristicPoints.add(Point(8.0f,12.0f))
-        secondImageCharacteristicPoints.add(Point(2.0f,1.0f))
+        secondImageCharacteristicPoints.add(Point(518.0f,366.0f))
+        secondImageCharacteristicPoints.add(Point(514.0f,410.0f))
+        secondImageCharacteristicPoints.add(Point(469.0f,385.0f))
         //////////////////////
 
         calculateTargetPoints()
@@ -87,15 +87,17 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
                 if (qx.toInt() < firstImageWidth && qy.toInt() < firstImageHeight) {
                     qColor = secondImageBitMap.getPixel(qx.toInt(), qy.toInt())
                 }
-                val color = (1 - lambda) * pColor + (lambda * qColor)
-                finalImageBitmap.setPixel(x,y,color.toInt())
+                val red = (1 - lambda) * Color.red(pColor) + (lambda * Color.red(qColor))
+                val green = (1 - lambda) * Color.green(pColor) + (lambda * Color.green(qColor))
+                val blue = (1 - lambda) * Color.green(pColor) + (lambda * Color.green(qColor))
+                val color = Color.rgb(red.toInt(), green.toInt(), blue.toInt())
+                finalImageBitmap.setPixel(x,y,color)
             }
         }
 
     }
 
     // async
-
     override fun doInBackground(vararg params: Void?): Bitmap {
         Logger.log("Started background task")
         getNewImage()

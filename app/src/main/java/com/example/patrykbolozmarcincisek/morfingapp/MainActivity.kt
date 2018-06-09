@@ -11,10 +11,22 @@ import com.esafirm.imagepicker.features.ImagePicker
 import com.esafirm.imagepicker.model.Image
 import com.morphing.Morphing
 import android.content.DialogInterface
+import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.widget.ImageView
 import com.shared.logger.Logger
 import kotlinx.coroutines.experimental.async
+import android.view.animation.AnimationUtils
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
+import android.view.animation.AnimationSet
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.AlphaAnimation
+import android.view.animation.DecelerateInterpolator
+
+
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -23,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private var startButton: Button? = null
     private var resultImageView: ImageView? = null
     private var selectedImages = mutableListOf<Image>()
+    private var imagesBitmap = mutableListOf<Bitmap>()
     lateinit var morpher: Morphing
     var isActivityEnabled: Boolean? = null
 
@@ -75,8 +88,8 @@ class MainActivity : AppCompatActivity() {
         if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             selectedImages = ImagePicker.getImages(data)
             morpher = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path))
-
-
+            imagesBitmap.add(BitmapFactory.decodeFile(selectedImages[0].path))
+            imagesBitmap.add(BitmapFactory.decodeFile(selectedImages[1].path))
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -87,7 +100,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onStartMorphing(view: View) {
-        resultImageView?.setImageBitmap(morpher.execute().get())
+        val resultBitmap  = morpher.execute().get()
+        imagesBitmap.add(1, resultBitmap)
+        resultImageView?.setImageBitmap(resultBitmap)
+        animate(resultImageView, imagesBitmap, 0, true)
+
+
     }
 
     /* DIALOG BOX */
@@ -99,5 +117,101 @@ class MainActivity : AppCompatActivity() {
         val alertDialog = alertDialogBuilder.create()
         alertDialog.show()
     }
+
+
+    private fun animate(imageView: ImageView?, images: MutableList<Bitmap>, imageIndex: Int, forever: Boolean) {
+
+        //imageView <-- The View which displays the images
+        //images[] <-- Holds R references to the images to display
+        //imageIndex <-- index of the first image to show in images[]
+        //forever <-- If equals true then after the last image it starts all over again with the first image resulting in an infinite loop. You have been warned.
+
+        val fadeInDuration = 500 // Configure time values here
+        val timeBetween = 3000
+        val fadeOutDuration = 1000
+
+        imageView?.visibility = View.INVISIBLE    //Visible or invisible by default - this will apply when the animation ends
+        imageView?.setImageBitmap(images[imageIndex])
+
+        val fadeIn = AlphaAnimation(0f, 1f)
+        fadeIn.interpolator = DecelerateInterpolator() // add this
+        fadeIn.duration = fadeInDuration.toLong()
+
+        val fadeOut = AlphaAnimation(1f, 0f)
+        fadeOut.interpolator = AccelerateInterpolator() // and this
+        fadeOut.startOffset = (fadeInDuration + timeBetween).toLong()
+        fadeOut.duration = fadeOutDuration.toLong()
+
+        val animation = AnimationSet(false) // change to false
+        animation.addAnimation(fadeIn)
+        animation.addAnimation(fadeOut)
+        animation.repeatCount = 1
+        imageView?.animation = animation
+
+        animation.setAnimationListener(object : AnimationListener {
+            override fun onAnimationEnd(animation: Animation) {
+                if (images.size - 1 > imageIndex) {
+                    animate(imageView, images, imageIndex + 1, forever) //Calls itself until it gets to the end of the array
+                } else {
+                    if (forever == true) {
+                        animate(imageView, images, 0, forever)  //Calls itself to start the animation all over again in a loop if forever = true
+                    }
+                }
+            }
+
+            override fun onAnimationRepeat(animation: Animation) {
+                // TODO Auto-generated method stub
+            }
+
+            override fun onAnimationStart(animation: Animation) {
+                // TODO Auto-generated method stub
+            }
+        })
+    }
+
+
+
+    private var currentIndex: Int = 0
+    private var startIndex: Int = 0
+    private var endIndex: Int = 2
+
+
+    fun nextImage() {
+        resultImageView?.setImageBitmap(imagesBitmap[currentIndex])
+        val rotateimage = AnimationUtils.loadAnimation(this, R.anim.abc_fade_in)
+        resultImageView?.startAnimation(rotateimage)
+        currentIndex++
+        Handler().postDelayed(Runnable {
+            if (currentIndex > endIndex) {
+                currentIndex--
+                previousImage()
+            } else {
+                nextImage()
+            }
+        }, 1000) // here 1000(1 second) interval to change from current  to next image
+
+    }
+
+    fun previousImage() {
+        resultImageView?.setImageBitmap(imagesBitmap[currentIndex])
+        val rotateimage = AnimationUtils.loadAnimation(this, R.anim.abc_fade_in)
+        resultImageView?.startAnimation(rotateimage)
+        currentIndex--
+        Handler().postDelayed(Runnable {
+            if (currentIndex < startIndex) {
+                currentIndex++
+                nextImage()
+            } else {
+                previousImage() // here 1000(1 second) interval to change from current  to previous image
+            }
+        }, 1000)
+
+    }
+
+
+
+
+
+
 
 }
