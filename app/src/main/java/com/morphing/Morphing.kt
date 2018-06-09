@@ -1,4 +1,5 @@
 package com.morphing
+
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.AsyncTask
@@ -20,7 +21,8 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
 
     private var firstImageCharacteristicPoints = ArrayList<Point>()
     private var secondImageCharacteristicPoints = ArrayList<Point>()
-
+    var list1: ArrayList<Point>? = ArrayList<Point>()
+    var list2: ArrayList<Point>? = ArrayList<Point>()
 
     constructor(firstImage: Bitmap, secondImage: Bitmap) {
 
@@ -32,6 +34,22 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
         secondImageCharacteristicPoints.add(Point(518.0f,366.0f))
         secondImageCharacteristicPoints.add(Point(514.0f,410.0f))
         secondImageCharacteristicPoints.add(Point(469.0f,385.0f))
+
+        // Dodawanie: 1 sposób - wyciągnąć z ArrayList z SwipeFragment
+//        firstImageCharacteristicPoints.add(list1.get(0))
+//        firstImageCharacteristicPoints.add(list1.get(1))
+//        firstImageCharacteristicPoints.add(list1.get(2))
+//        secondImageCharacteristicPoints.add(list1.get(0))
+//        secondImageCharacteristicPoints.add(list1.get(1))
+//        secondImageCharacteristicPoints.add(list1.get(2))
+
+        // Dodawanie: 2 sposób - wyciągnąć z ArrayList z SwipeFragment
+//        firstImageCharacteristicPoints.add(Point(list1.get(0).getX(), Point(list1.get(0).getY())))
+//        firstImageCharacteristicPoints.add(Point(list1.get(1).getX(), Point(list1.get(1).getY())))
+//        firstImageCharacteristicPoints.add(Point(list1.get(2).getX(), Point(list1.get(2.getY())))
+//        secondImageCharacteristicPoints.add(Point(list2.get(0).getX(), Point(list1.get(0).getY())))
+//        secondImageCharacteristicPoints.add(Point(list2.get(1).getX(), Point(list1.get(1).getY())))
+//        secondImageCharacteristicPoints.add(Point(list2.get(2).getX(), Point(list1.get(2).getY())))
         //////////////////////
 
         calculateTargetPoints()
