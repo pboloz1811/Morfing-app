@@ -12,6 +12,8 @@ import com.esafirm.imagepicker.model.Image
 import com.morphing.Morphing
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
+import com.shared.logger.Logger
+import kotlinx.coroutines.experimental.async
 
 
 class MainActivity : AppCompatActivity() {
@@ -79,6 +81,14 @@ class MainActivity : AppCompatActivity() {
     private fun getImageForUrl(path: String): Bitmap {
         val bitmap = BitmapFactory.decodeFile(path)
         return bitmap
+    }
+
+    fun onStartMorphing(view: View) {
+        async {
+            Logger.log("async")
+            morpher.getNewImage()
+            Logger.log("async")
+        }
     }
 
     /* DIALOG BOX */
