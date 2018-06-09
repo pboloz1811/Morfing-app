@@ -13,11 +13,11 @@ class SwipeFragment: Fragment() {
 
     private val MAX_POINTS = 3
 
-
-
+    private var counter = 0
     private var imageView: ImageView? = null
     private var imageUrl = ""
 
+    var delegate: SwipeDelegate? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -29,17 +29,14 @@ class SwipeFragment: Fragment() {
         }
         imageView?.setOnTouchListener({ v: View, m: MotionEvent ->
             if (m.action == MotionEvent.ACTION_DOWN) {
-                Logger.log("X: " + m.getX() + " Y: " + m.getY())
+                counter++
+                if (counter == MAX_POINTS) {
+                    delegate?.swipeToNext()
+                }
             }
             true
         })
         return view
-    }
-
-
-    private fun drawPoint(x: Float, y: Float) {
-
-
     }
 
     companion object {
@@ -51,4 +48,8 @@ class SwipeFragment: Fragment() {
     }
 
 
+}
+
+interface SwipeDelegate {
+    fun swipeToNext()
 }

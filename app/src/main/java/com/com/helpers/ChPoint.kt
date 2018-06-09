@@ -1,5 +1,8 @@
 package com.com.helpers
 
+import kotlin.math.pow
+import kotlin.math.sqrt
+
 class ChPoint {
 
     var px: Float
@@ -12,8 +15,8 @@ class ChPoint {
     var rpy: Float
     var rqx: Float
     var rqy: Float
-    var rp: Point // odl względna między punktami P oraz punktami docelowymi T
-    var rq: Point // odl względna między punktami Q oraz punktami docelowymi T
+    var PTDiff: Float // odl względna między punktami P oraz punktami docelowymi T
+    var QTDiff: Float // odl względna między punktami Q oraz punktami docelowymi T
 
 
 
@@ -29,10 +32,8 @@ class ChPoint {
         this.rpy = rpy
         this.rqx = rqx
         this.rqy = rqy
-
-        this.rp = Point(rpx - tx, rpy - ty)
-        this.rq = Point(rqx - tx, rqy - ty)
-
+        PTDiff = sqrt((rpx - tx).pow(2) + (rpy - ty).pow(2))
+        QTDiff = sqrt((rqx - tx).pow(2) + (rqy - ty).pow(2))
     }
 
 

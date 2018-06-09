@@ -3,6 +3,8 @@ import android.graphics.Bitmap
 import com.com.helpers.ChPoint
 import com.com.helpers.Point
 import com.shared.logger.Logger
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 
 class Morphing {
@@ -39,6 +41,9 @@ class Morphing {
 
         finalImageBitmap = cloneBitmap()
 
+        Logger.log("First Image width: " + firstImageBitMap.width.toString() + " height: " + firstImageBitMap.height.toString())
+        Logger.log("Second Image width: " + secondImageBitMap.width.toString() + " height: " + secondImageBitMap.height.toString())
+
         getNewImage()
 
     }
@@ -65,19 +70,21 @@ class Morphing {
 
 
     fun getNewImage() {
-        for(i in 0..finalImageBitmap.width) {
-            for (j in 0..finalImageBitmap.height) {
-
-
-
-
+        val firstChPoint = targetPoints[0]
+        val secondChPoint = targetPoints[1]
+        val thirdChPoint = targetPoints[2]
+        for(x in 0..finalImageBitmap.width - 1) {
+            for (y in 0..finalImageBitmap.height - 1) {
+                val firstDiff = sqrt((x - firstChPoint.tx).pow(2) + (y - firstChPoint.ty).pow(2))
+                val secondDiff = sqrt((x - secondChPoint.tx).pow(2) + (y - secondChPoint.ty).pow(2))
+                val thirdDiff = sqrt((x - thirdChPoint.tx).pow(2) + (y - thirdChPoint.ty).pow(2))
+                val px = (((firstChPoint.PTDiff / firstDiff.pow(2)) + (secondChPoint.PTDiff / secondDiff.pow(2)) + (thirdChPoint.PTDiff / thirdDiff.pow(2))) / ((1 / firstDiff.pow(2)) + (1 / secondDiff.pow(2)) + (1 / thirdDiff.pow(2)))) + x
+                val py = (((firstChPoint.PTDiff / firstDiff.pow(2)) + (secondChPoint.PTDiff / secondDiff.pow(2)) + (thirdChPoint.PTDiff / thirdDiff.pow(2))) / ((1 / firstDiff.pow(2)) + (1 / secondDiff.pow(2)) + (1 / thirdDiff.pow(2)))) + y
+                val pixel = firstImageBitMap.getPixel(px.toInt(), py.toInt())
+                val qx = (((firstChPoint.QTDiff / firstDiff.pow(2)) + (secondChPoint.QTDiff / secondDiff.pow(2)) + (thirdChPoint.QTDiff / thirdDiff.pow(2))) / ((1 / firstDiff.pow(2)) + (1 / secondDiff.pow(2)) + (1 / thirdDiff.pow(2)))) + x
+//                Logger.log("[x]: " + px.toString() + " [y]: " + py.toString())
             }
         }
-
-    }
-
-
-    fun getFirstImagePoint() {
 
     }
 

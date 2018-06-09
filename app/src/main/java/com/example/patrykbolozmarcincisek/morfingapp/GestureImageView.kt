@@ -17,9 +17,14 @@ class GestureImageView : AppCompatActivity() {
         var url1 = intent.getStringExtra("imageUrl")
         var url2 = intent.getStringExtra("imageUrl2")
         mPager = findViewById<ViewPager>(R.id.pager)
-        mPager.adapter = GestureImageViewAdapter(this, url1, url2, supportFragmentManager)
+        mPager.adapter = GestureImageViewAdapter(this, url1, url2, mPager ,supportFragmentManager)
+
 
     }
+
+
+
+
 
 
 
