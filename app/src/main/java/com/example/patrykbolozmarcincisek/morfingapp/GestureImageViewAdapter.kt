@@ -13,12 +13,14 @@ class GestureImageViewAdapter: FragmentStatePagerAdapter, SwipeFragment.SwipeDel
     var imageUrls = ArrayList<String>()
     lateinit var inflater: LayoutInflater
     val pager: ViewPager
+    var delegate: onFinishDelegate? = null
 
-    constructor(context: Context, imageUrl1: String, imageUrl2: String, pager: ViewPager, manager: FragmentManager): super(manager) {
+    constructor(context: Context, imageUrl1: String, imageUrl2: String, pager: ViewPager, manager: FragmentManager, delegate: onFinishDelegate): super(manager) {
         this.context = context
         imageUrls.add(imageUrl1)
         imageUrls.add(imageUrl2)
         this.pager = pager
+        this.delegate = delegate
     }
 
     override fun getCount(): Int {
@@ -31,7 +33,12 @@ class GestureImageViewAdapter: FragmentStatePagerAdapter, SwipeFragment.SwipeDel
         return fragment
     }
 
-    override fun swipeToNext() {
-        pager.setCurrentItem(1,true)
+    override fun swipeToNext(forceClose: Boolean?) {
+        if (forceClose != null) {
+            delegate?.onFinishActivity()
+        } else {
+            pager.setCurrentItem(1,true)
+        }
+
     }
 }

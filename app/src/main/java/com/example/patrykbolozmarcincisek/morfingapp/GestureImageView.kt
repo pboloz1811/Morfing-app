@@ -7,7 +7,7 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 
 /* BUTTON 2: CHOOSE POINTS */
-class GestureImageView : AppCompatActivity() {
+class GestureImageView : AppCompatActivity(), onFinishDelegate {
     lateinit var mPager: ViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,7 +16,7 @@ class GestureImageView : AppCompatActivity() {
         var url1 = intent.getStringExtra("imageUrl")
         var url2 = intent.getStringExtra("imageUrl2")
         mPager = findViewById<ViewPager>(R.id.pager)
-        mPager.adapter = GestureImageViewAdapter(this, url1, url2, mPager ,supportFragmentManager)
+        mPager.adapter = GestureImageViewAdapter(this, url1, url2, mPager ,supportFragmentManager, this)
         dialogBox()
     }
 
@@ -29,5 +29,13 @@ class GestureImageView : AppCompatActivity() {
         val alertDialog = alertDialogBuilder.create()
         alertDialog.show()
     }
+
+    override fun onFinishActivity() {
+        this.finish()
+    }
+}
+
+interface onFinishDelegate {
+    fun onFinishActivity()
 }
 
