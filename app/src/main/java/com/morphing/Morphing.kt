@@ -1,7 +1,7 @@
 package com.morphing
 import android.graphics.Bitmap
 import com.com.helpers.ChPoint
-import com.com.helpers.Point
+import com.example.patrykbolozmarcincisek.morfingapp.Point
 import com.shared.logger.Logger
 import kotlin.math.pow
 import kotlin.math.sqrt
