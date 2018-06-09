@@ -1,7 +1,6 @@
-package com.com.helpers
+package com.example.patrykbolozmarcincisek.morfingapp
 
 class Point {
-
     private val x: Float
     private val y: Float
 
@@ -17,5 +16,4 @@ class Point {
     fun getY(): Float {
         return this.y
     }
-
 }

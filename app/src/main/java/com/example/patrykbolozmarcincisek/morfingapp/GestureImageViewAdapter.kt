@@ -4,27 +4,23 @@ import android.content.Context
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.app.Fragment
-import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
-
 import android.view.View
 
-
-
-class GestureImageViewAdapter: FragmentStatePagerAdapter, SwipeDelegate {
-
+class GestureImageViewAdapter: FragmentStatePagerAdapter, SwipeFragment.SwipeDelegate {
     var context: Context
     var imageUrls = ArrayList<String>()
-    val pager: ViewPager
-
     lateinit var inflater: LayoutInflater
+    val pager: ViewPager
+    var delegate: onFinishDelegate? = null
 
-    constructor(context: Context, imageUrl1: String, imageUrl2: String, pager: ViewPager, manager: FragmentManager): super(manager) {
+    constructor(context: Context, imageUrl1: String, imageUrl2: String, pager: ViewPager, manager: FragmentManager, delegate: onFinishDelegate): super(manager) {
         this.context = context
         imageUrls.add(imageUrl1)
         imageUrls.add(imageUrl2)
         this.pager = pager
+        this.delegate = delegate
     }
 
     override fun getCount(): Int {
@@ -37,9 +33,12 @@ class GestureImageViewAdapter: FragmentStatePagerAdapter, SwipeDelegate {
         return fragment
     }
 
+    override fun swipeToNext(forceClose: Boolean?) {
+        if (forceClose != null) {
+            delegate?.onFinishActivity()
+        } else {
+            pager.setCurrentItem(1,true)
+        }
 
-    override fun swipeToNext() {
-        pager.setCurrentItem(1,true)
     }
-
 }

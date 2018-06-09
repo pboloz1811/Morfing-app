@@ -8,7 +8,6 @@ import kotlin.math.sqrt
 
 
 class Morphing {
-
     private var firstImageBitMap: Bitmap
     private var secondImageBitMap: Bitmap
     private var finalImageBitmap: Bitmap
@@ -87,7 +86,4 @@ class Morphing {
         }
 
     }
-
-
-
 }
