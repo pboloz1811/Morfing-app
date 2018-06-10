@@ -23,8 +23,10 @@ import android.view.animation.AnimationSet
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.DecelerateInterpolator
-
-
+import kotlin.concurrent.thread
+import android.os.AsyncTask
+import android.os.Build
+import android.annotation.TargetApi
 
 
 
@@ -37,6 +39,8 @@ class MainActivity : AppCompatActivity() {
     private var selectedImages = mutableListOf<Image>()
     private var imagesBitmap = mutableListOf<Bitmap>()
     lateinit var morpher: Morphing
+    lateinit var morpher1: Morphing
+    lateinit var morpher2: Morphing
     var isActivityEnabled: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +91,9 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             selectedImages = ImagePicker.getImages(data)
-            morpher = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path))
+            morpher = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.2)
+            morpher1 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.6)
+            morpher2 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.8)
             imagesBitmap.add(BitmapFactory.decodeFile(selectedImages[0].path))
             imagesBitmap.add(BitmapFactory.decodeFile(selectedImages[1].path))
         }
@@ -100,10 +106,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onStartMorphing(view: View) {
-        val resultBitmap  = morpher.execute().get()
-        imagesBitmap.add(1, resultBitmap)
-        resultImageView?.setImageBitmap(resultBitmap)
-        animate(resultImageView, imagesBitmap, 0, true)
+//        val resultBitmap  = morpher.execute().get()
+//        val resultBitmap1  = morpher1.execute().get()
+//        val resultBitmap2  = morpher2.execute().get()
+//        imagesBitmap.add(1, resultBitmap)
+//        imagesBitmap.add(2, resultBitmap1)
+//        imagesBitmap.add(3, resultBitmap2)
+
+
+
+//        resultImageView?.setImageBitmap(resultBitmap)
+//        animate(resultImageView, imagesBitmap, 0, true)
 
 
     }
@@ -173,7 +186,7 @@ class MainActivity : AppCompatActivity() {
 
     private var currentIndex: Int = 0
     private var startIndex: Int = 0
-    private var endIndex: Int = 2
+    private var endIndex: Int = 4
 
 
     fun nextImage() {
@@ -188,7 +201,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 nextImage()
             }
-        }, 1000) // here 1000(1 second) interval to change from current  to next image
+        }, 500) // here 1000(1 second) interval to change from current  to next image
 
     }
 
@@ -204,7 +217,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 previousImage() // here 1000(1 second) interval to change from current  to previous image
             }
-        }, 1000)
+        }, 500)
 
     }
 

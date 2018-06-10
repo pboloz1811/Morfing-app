@@ -15,14 +15,14 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
     private var firstImageWidth: Int = 0
     private var firstImageHeight: Int = 0
     var finalImageBitmap: Bitmap
-    private val lambda = 0.5
+    private var lambda: Double
     private var targetPoints = ArrayList<ChPoint>() // Punkty na obrazie docelowym obliczanie na podstawie punktów charakterystycznych dla każdego obrazka
 
     private var firstImageCharacteristicPoints = ArrayList<Point>()
     private var secondImageCharacteristicPoints = ArrayList<Point>()
 
 
-    constructor(firstImage: Bitmap, secondImage: Bitmap) {
+    constructor(firstImage: Bitmap, secondImage: Bitmap, lambda: Double) {
 
         // Temporary hardcoded
         firstImageCharacteristicPoints.add(Point(615.0f,366.0f))
@@ -38,7 +38,7 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
         firstImageBitMap = firstImage
         secondImageBitMap = secondImage
 
-
+        this.lambda = lambda
         finalImageBitmap = cloneBitmap()
 
         firstImageWidth = firstImageBitMap.width
@@ -104,6 +104,7 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
         Logger.log("Finished do in background task")
         return finalImageBitmap
     }
+
 
 
 }
