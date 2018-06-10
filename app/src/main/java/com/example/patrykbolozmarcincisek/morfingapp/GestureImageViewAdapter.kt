@@ -33,7 +33,7 @@ class GestureImageViewAdapter: FragmentStatePagerAdapter, SwipeFragment.SwipeDel
         return fragment
     }
 
-    override fun swipeToNext(forceClose: Boolean?) {
+    override fun swipeToNext(forceClose: Boolean?, listPoint1: ArrayList<Point>?, listPoint2: ArrayList<Point>?) {
         if (forceClose != null) {
             delegate?.onFinishActivity()
         } else {

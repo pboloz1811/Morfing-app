@@ -91,9 +91,6 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             selectedImages = ImagePicker.getImages(data)
-            morpher = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.2)
-            morpher1 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.6)
-            morpher2 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.8)
             imagesBitmap.add(BitmapFactory.decodeFile(selectedImages[0].path))
             imagesBitmap.add(BitmapFactory.decodeFile(selectedImages[1].path))
         }
@@ -106,18 +103,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onStartMorphing(view: View) {
-//        val resultBitmap  = morpher.execute().get()
-//        val resultBitmap1  = morpher1.execute().get()
-//        val resultBitmap2  = morpher2.execute().get()
-//        imagesBitmap.add(1, resultBitmap)
-//        imagesBitmap.add(2, resultBitmap1)
-//        imagesBitmap.add(3, resultBitmap2)
+        morpher = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.2)
+        morpher1 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.6)
+        morpher2 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.8)
+
+        imagesBitmap.add(1, morpher.execute().get())
+        imagesBitmap.add(2, morpher1.execute().get())
+        imagesBitmap.add(3, morpher2.execute().get())
 
 
-
-//        resultImageView?.setImageBitmap(resultBitmap)
-//        animate(resultImageView, imagesBitmap, 0, true)
-
+        nextImage()
 
     }
 
