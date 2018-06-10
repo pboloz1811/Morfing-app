@@ -8,6 +8,9 @@ import com.shared.logger.Logger
 import java.io.File
 import android.view.MotionEvent
 import android.view.View.OnTouchListener
+import com.morphing.Morphing
+import com.morphing.list1
+import com.morphing.list2
 
 
 class SwipeFragment: Fragment() {
@@ -19,17 +22,13 @@ class SwipeFragment: Fragment() {
     private var X = 0.0F
     private var Y = 0.0F
     var delegate: SwipeDelegate? = null
-    /* PRZEKAZAĆ OBIE LISTY DO Morphing.kt */
-    var listPoints1: ArrayList<Point>? = ArrayList<Point>()
-    var listPoints2: ArrayList<Point>? = ArrayList<Point>()
-
-    fun getListA(): ArrayList<Point>? { return listPoints1; }
-    fun getListB(): ArrayList<Point>? { return listPoints2; }
 
 
     interface SwipeDelegate {
-        fun swipeToNext(forceClose: Boolean? = null)
-    }
+        fun swipeToNext(forceClose: Boolean? = null,
+                        listPoint1: ArrayList<Point>? = null,
+                        listPoint2: ArrayList<Point>? = null)
+}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.swipe_fragment, container, false)
@@ -50,20 +49,20 @@ class SwipeFragment: Fragment() {
 
                     if (SwipeFragment.counter <= MAX_POINTS_1) {
                         Logger.log("POINT 1: " + "X: " + X + " Y: " + Y + " counter: " + SwipeFragment.counter)
-                        listPoints1?.add(Point(X, Y))
+                        list1?.add(Point(X, Y))
                         counter++
                         if (SwipeFragment.counter == 3) {
-                            printArrayToLog(listPoints1, 1)
+                            printArrayToLog(list1, 1)
                             delegate?.swipeToNext()
                         }
                     }
 
                     else if (SwipeFragment.counter > MAX_POINTS_1 && SwipeFragment.counter <= MAX_POINTS_2) {
                         Logger.log("POINT 2: " + "X: " + X + " Y: " + Y + " counter: " + SwipeFragment.counter)
-                        listPoints2?.add(Point(X, Y))
+                        list2?.add(Point(X, Y))
                         if(SwipeFragment.counter == 6) {
-                            printArrayToLog(listPoints2, 2)
-                            delegate?.swipeToNext(true)
+                            printArrayToLog(list2, 2)
+                            delegate?.swipeToNext(true, list1, list2)
                         }
                     }
                     else {

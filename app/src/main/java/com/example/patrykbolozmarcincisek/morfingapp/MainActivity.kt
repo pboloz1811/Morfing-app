@@ -25,10 +25,6 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.DecelerateInterpolator
 
 
-
-
-
-
 class MainActivity : AppCompatActivity() {
     private var libraryButton: Button? = null
     private var choosePointsButton: Button? = null
@@ -87,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             selectedImages = ImagePicker.getImages(data)
-            morpher = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path))
+
             imagesBitmap.add(BitmapFactory.decodeFile(selectedImages[0].path))
             imagesBitmap.add(BitmapFactory.decodeFile(selectedImages[1].path))
         }
@@ -100,6 +96,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onStartMorphing(view: View) {
+        morpher = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path))
         val resultBitmap  = morpher.execute().get()
         imagesBitmap.add(1, resultBitmap)
         resultImageView?.setImageBitmap(resultBitmap)

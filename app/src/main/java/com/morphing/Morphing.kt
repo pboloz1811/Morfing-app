@@ -9,6 +9,8 @@ import com.shared.logger.Logger
 import kotlin.math.pow
 import kotlin.math.sqrt
 
+var list1: ArrayList<Point> = ArrayList<Point>()
+var list2: ArrayList<Point> = ArrayList<Point>()
 
 class Morphing: AsyncTask<Void, Void, Bitmap> {
     private var firstImageBitMap: Bitmap
@@ -21,36 +23,32 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
 
     private var firstImageCharacteristicPoints = ArrayList<Point>()
     private var secondImageCharacteristicPoints = ArrayList<Point>()
-    var list1: ArrayList<Point>? = ArrayList<Point>()
-    var list2: ArrayList<Point>? = ArrayList<Point>()
+
+    private fun printArrayToLog(listPoints: ArrayList<Point>?, arrayNo: Int) {
+        var counter = 1
+        Logger.log("Array no. " + arrayNo)
+        if (listPoints != null) {
+            for(point in listPoints){
+                Logger.log("\nPoint " + counter + ": ("
+                        + point.getX() + ", "
+                        + point.getY() + ")" )
+                counter++
+            }
+        }
+        else {
+            Logger.log("Empty array.")
+        }
+    }
 
     constructor(firstImage: Bitmap, secondImage: Bitmap) {
+        Logger.log("IN MORPHING: ")
+        firstImageCharacteristicPoints.add(list1.get(0))
+        firstImageCharacteristicPoints.add(list1.get(1))
+        firstImageCharacteristicPoints.add(list1.get(2))
 
-        // Temporary hardcoded
-        firstImageCharacteristicPoints.add(Point(615.0f,366.0f))
-        firstImageCharacteristicPoints.add(Point(616.0f,398.0f))
-        firstImageCharacteristicPoints.add(Point(565.0f,367.0f))
-
-        secondImageCharacteristicPoints.add(Point(518.0f,366.0f))
-        secondImageCharacteristicPoints.add(Point(514.0f,410.0f))
-        secondImageCharacteristicPoints.add(Point(469.0f,385.0f))
-
-        // Dodawanie: 1 sposób - wyciągnąć z ArrayList z SwipeFragment
-//        firstImageCharacteristicPoints.add(list1.get(0))
-//        firstImageCharacteristicPoints.add(list1.get(1))
-//        firstImageCharacteristicPoints.add(list1.get(2))
-//        secondImageCharacteristicPoints.add(list1.get(0))
-//        secondImageCharacteristicPoints.add(list1.get(1))
-//        secondImageCharacteristicPoints.add(list1.get(2))
-
-        // Dodawanie: 2 sposób - wyciągnąć z ArrayList z SwipeFragment
-//        firstImageCharacteristicPoints.add(Point(list1.get(0).getX(), Point(list1.get(0).getY())))
-//        firstImageCharacteristicPoints.add(Point(list1.get(1).getX(), Point(list1.get(1).getY())))
-//        firstImageCharacteristicPoints.add(Point(list1.get(2).getX(), Point(list1.get(2.getY())))
-//        secondImageCharacteristicPoints.add(Point(list2.get(0).getX(), Point(list1.get(0).getY())))
-//        secondImageCharacteristicPoints.add(Point(list2.get(1).getX(), Point(list1.get(1).getY())))
-//        secondImageCharacteristicPoints.add(Point(list2.get(2).getX(), Point(list1.get(2).getY())))
-        //////////////////////
+        secondImageCharacteristicPoints.add(list2.get(0))
+        secondImageCharacteristicPoints.add(list2.get(1))
+        secondImageCharacteristicPoints.add(list2.get(2))
 
         calculateTargetPoints()
         firstImageBitMap = firstImage
@@ -64,7 +62,6 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
 
         Logger.log("First Image width: " + firstImageBitMap.width.toString() + " height: " + firstImageBitMap.height.toString())
         Logger.log("Second Image width: " + secondImageBitMap.width.toString() + " height: " + secondImageBitMap.height.toString())
-
     }
 
     private fun calculateTargetPoints() {
@@ -75,7 +72,6 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
             val ty = (1 - lambda) * p.getY() + (lambda) * q.getY()
             targetPoints.add(ChPoint(tx.toFloat(), ty.toFloat(), p, q))
         }
-
     }
 
     fun cloneBitmap(): Bitmap {
@@ -88,6 +84,10 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
         val firstChPoint = targetPoints[0]
         val secondChPoint = targetPoints[1]
         val thirdChPoint = targetPoints[2]
+
+        printArrayToLog(firstImageCharacteristicPoints, 1)
+        printArrayToLog(secondImageCharacteristicPoints, 2)
+
         for(y in 0..finalImageBitmap.height - 1) {
             for (x in 0..finalImageBitmap.width - 1) {
                 val firstDiff = sqrt((x - firstChPoint.tx).pow(2) + (y - firstChPoint.ty).pow(2))
@@ -112,7 +112,6 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
                 finalImageBitmap.setPixel(x,y,color)
             }
         }
-
     }
 
     // async
@@ -122,6 +121,5 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
         Logger.log("Finished do in background task")
         return finalImageBitmap
     }
-
 
 }
