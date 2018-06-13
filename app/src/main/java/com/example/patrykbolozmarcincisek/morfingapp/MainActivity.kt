@@ -27,8 +27,8 @@ import kotlin.concurrent.thread
 import android.os.AsyncTask
 import android.os.Build
 import android.annotation.TargetApi
-
-
+import android.widget.ProgressBar
+import kotlinx.android.synthetic.main.activity_main.view.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private var choosePointsButton: Button? = null
     private var startButton: Button? = null
     private var resultImageView: ImageView? = null
+    private var progressBar: ProgressBar? = null
     private var selectedImages = mutableListOf<Image>()
     private var imagesBitmap = mutableListOf<Bitmap>()
     lateinit var morpher: Morphing
@@ -54,6 +55,7 @@ class MainActivity : AppCompatActivity() {
         choosePointsButton = findViewById(R.id.choosePoints) as Button
         startButton = findViewById(R.id.start) as Button
         resultImageView = findViewById(R.id.resultImageView) as ImageView
+        progressBar = findViewById(R.id.progressBar) as ProgressBar
     }
 
     /* BUTTON 1 */
@@ -103,14 +105,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onStartMorphing(view: View) {
+
+
         morpher = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.2)
         morpher1 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.6)
         morpher2 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.8)
-
-        imagesBitmap.add(1, morpher.execute().get())
-        imagesBitmap.add(2, morpher1.execute().get())
-        imagesBitmap.add(3, morpher2.execute().get())
-
+        imagesBitmap.add(1, morpher.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get())
+        imagesBitmap.add(2, morpher1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get())
+        imagesBitmap.add(3, morpher2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get())
 
         nextImage()
 
@@ -217,8 +219,13 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB) // API 11
+    fun startMyTask(asyncTask: AsyncTask<*, *, *>) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+            asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+        else
+            asyncTask.execute()
+    }
 
 
 
