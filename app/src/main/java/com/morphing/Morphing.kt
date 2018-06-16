@@ -2,7 +2,6 @@ package com.morphing
 
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.os.AsyncTask
 import com.com.helpers.ChPoint
 import com.example.patrykbolozmarcincisek.morfingapp.Point
 import com.shared.logger.Logger
@@ -14,7 +13,7 @@ import kotlin.math.sqrt
 var list1: ArrayList<Point> = ArrayList<Point>()
 var list2: ArrayList<Point> = ArrayList<Point>()
 
-class Morphing: AsyncTask<Void, Void, Bitmap> {
+class Morphing: Thread {
     private var firstImageBitMap: Bitmap
     private var secondImageBitMap: Bitmap
     private var firstImageWidth: Int = 0
@@ -25,6 +24,8 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
     private var targetPoints = ArrayList<ChPoint>() // Punkty na obrazie docelowym obliczanie na podstawie punktów charakterystycznych dla każdego obrazka
     private var firstImageCharacteristicPoints = ArrayList<Point>()
     private var secondImageCharacteristicPoints = ArrayList<Point>()
+    var finalImageBitmap: Bitmap
+
 
 
     constructor(firstImage: Bitmap, secondImage: Bitmap, lambda: Double) {
@@ -45,6 +46,7 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
         secondImageHeight = secondImageBitMap.height
 
         calculateTargetPoints()
+        finalImageBitmap = cloneBitmap()
 
         Logger.log("First Image width: " + firstImageBitMap.width.toString() + " height: " + firstImageBitMap.height.toString())
         Logger.log("Second Image width: " + secondImageBitMap.width.toString() + " height: " + secondImageBitMap.height.toString())
@@ -61,13 +63,11 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
     }
 
     private fun cloneBitmap(): Bitmap {
-        var bitmap = Bitmap.createBitmap(firstImageBitMap.width, firstImageBitMap.height, firstImageBitMap.config)
+        var bitmap = Bitmap.createBitmap(firstImageWidth, firstImageHeight, firstImageBitMap.config)
         return bitmap
     }
 
-
-    private fun getNewImage(): Bitmap {
-        val finalImageBitmap = cloneBitmap()
+    private fun getNewImage() {
         for(y in 0..finalImageBitmap.height - 1) {
             for (x in 0..finalImageBitmap.width - 1) {
                 val point = findCoordinate(x,y)
@@ -87,7 +87,7 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
 
             }
         }
-        return finalImageBitmap
+
     }
 
     private fun findCoordinate(tx: Int, ty: Int): Coordinate {
@@ -118,14 +118,13 @@ class Morphing: AsyncTask<Void, Void, Bitmap> {
         return Coordinate(spx,spy,sqx,sqy)
     }
 
-    // async
-    override fun doInBackground(vararg params: Void?): Bitmap {
-        Logger.log("Started background task")
-        Logger.log("Current thread name: " + Thread.currentThread().name)
-        val finalImageBitmap = getNewImage()
-        Logger.log("Finished do in background task")
-        return finalImageBitmap
+
+    override fun run() {
+        Logger.log("Started on running thread: " + Thread.currentThread().id)
+        getNewImage()
+        Logger.log("finished on thread: " + Thread.currentThread().id)
     }
+
 
     internal class Coordinate {
         var spx = 0.0f

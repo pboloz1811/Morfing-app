@@ -94,16 +94,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onStartMorphing(view: View) {
+
         morpher = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.2)
         morpher1 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.4)
         morpher2 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.6)
         morpher3 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.8)
-        imagesBitmap.add(1, morpher.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get())
-        imagesBitmap.add(2, morpher1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get())
-        imagesBitmap.add(3, morpher2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get())
-        imagesBitmap.add(4, morpher3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get())
+
+        morpher.start()
+        morpher1.start()
+        morpher2.start()
+        morpher3.start()
+
+        morpher.join()
+        morpher1.join()
+        morpher2.join()
+        morpher3.join()
+
+
+        imagesBitmap.add(1, morpher.finalImageBitmap)
+        imagesBitmap.add(2, morpher1.finalImageBitmap)
+        imagesBitmap.add(3, morpher2.finalImageBitmap)
+        imagesBitmap.add(4, morpher3.finalImageBitmap)
+
         nextImage()
     }
+
 
     // MARK : Animation
 
