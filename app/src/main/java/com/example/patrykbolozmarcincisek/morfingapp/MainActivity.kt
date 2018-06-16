@@ -10,25 +10,13 @@ import android.widget.Toast
 import com.esafirm.imagepicker.features.ImagePicker
 import com.esafirm.imagepicker.model.Image
 import com.morphing.Morphing
-import android.content.DialogInterface
 import android.os.Handler
-import android.support.v7.app.AlertDialog
 import android.widget.ImageView
-import com.shared.logger.Logger
-import kotlinx.coroutines.experimental.async
 import android.view.animation.AnimationUtils
-import android.view.animation.Animation
-import android.view.animation.Animation.AnimationListener
-import android.view.animation.AnimationSet
-import android.view.animation.AccelerateInterpolator
-import android.view.animation.AlphaAnimation
-import android.view.animation.DecelerateInterpolator
-import kotlin.concurrent.thread
 import android.os.AsyncTask
 import android.os.Build
 import android.annotation.TargetApi
 import android.widget.ProgressBar
-import kotlinx.android.synthetic.main.activity_main.view.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -42,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var morpher: Morphing
     lateinit var morpher1: Morphing
     lateinit var morpher2: Morphing
+    lateinit var morpher3: Morphing
     var isActivityEnabled: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,85 +94,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onStartMorphing(view: View) {
-
-
         morpher = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.2)
-        morpher1 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.6)
-        morpher2 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.8)
+        morpher1 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.4)
+        morpher2 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.6)
+        morpher3 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.8)
         imagesBitmap.add(1, morpher.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get())
         imagesBitmap.add(2, morpher1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get())
         imagesBitmap.add(3, morpher2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get())
-
+        imagesBitmap.add(4, morpher3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get())
         nextImage()
-
     }
 
-    /* DIALOG BOX */
-    fun dialogBox() {
-        val alertDialogBuilder = AlertDialog.Builder(this)
-        alertDialogBuilder.setMessage("TEST")
-        alertDialogBuilder.setPositiveButton("Ok",
-                DialogInterface.OnClickListener { arg0, arg1 -> })
-        val alertDialog = alertDialogBuilder.create()
-        alertDialog.show()
-    }
-
-
-    private fun animate(imageView: ImageView?, images: MutableList<Bitmap>, imageIndex: Int, forever: Boolean) {
-
-        //imageView <-- The View which displays the images
-        //images[] <-- Holds R references to the images to display
-        //imageIndex <-- index of the first image to show in images[]
-        //forever <-- If equals true then after the last image it starts all over again with the first image resulting in an infinite loop. You have been warned.
-
-        val fadeInDuration = 500 // Configure time values here
-        val timeBetween = 3000
-        val fadeOutDuration = 1000
-
-        imageView?.visibility = View.INVISIBLE    //Visible or invisible by default - this will apply when the animation ends
-        imageView?.setImageBitmap(images[imageIndex])
-
-        val fadeIn = AlphaAnimation(0f, 1f)
-        fadeIn.interpolator = DecelerateInterpolator() // add this
-        fadeIn.duration = fadeInDuration.toLong()
-
-        val fadeOut = AlphaAnimation(1f, 0f)
-        fadeOut.interpolator = AccelerateInterpolator() // and this
-        fadeOut.startOffset = (fadeInDuration + timeBetween).toLong()
-        fadeOut.duration = fadeOutDuration.toLong()
-
-        val animation = AnimationSet(false) // change to false
-        animation.addAnimation(fadeIn)
-        animation.addAnimation(fadeOut)
-        animation.repeatCount = 1
-        imageView?.animation = animation
-
-        animation.setAnimationListener(object : AnimationListener {
-            override fun onAnimationEnd(animation: Animation) {
-                if (images.size - 1 > imageIndex) {
-                    animate(imageView, images, imageIndex + 1, forever) //Calls itself until it gets to the end of the array
-                } else {
-                    if (forever == true) {
-                        animate(imageView, images, 0, forever)  //Calls itself to start the animation all over again in a loop if forever = true
-                    }
-                }
-            }
-
-            override fun onAnimationRepeat(animation: Animation) {
-                // TODO Auto-generated method stub
-            }
-
-            override fun onAnimationStart(animation: Animation) {
-                // TODO Auto-generated method stub
-            }
-        })
-    }
-
-
+    // MARK : Animation
 
     private var currentIndex: Int = 0
     private var startIndex: Int = 0
-    private var endIndex: Int = 4
+    private var endIndex: Int = 5
 
 
     fun nextImage() {
@@ -198,7 +124,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 nextImage()
             }
-        }, 500) // here 1000(1 second) interval to change from current  to next image
+        }, 500)
 
     }
 
@@ -212,7 +138,7 @@ class MainActivity : AppCompatActivity() {
                 currentIndex++
                 nextImage()
             } else {
-                previousImage() // here 1000(1 second) interval to change from current  to previous image
+                previousImage()
             }
         }, 500)
 
