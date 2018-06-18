@@ -37,6 +37,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         getReferenceToControls()
+        disablePointsButton()
+        disableStart()
     }
 
     fun getReferenceToControls() {
@@ -47,25 +49,28 @@ class MainActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBar) as ProgressBar
     }
 
-    /* BUTTON 1 */
+    /* LIBRARY BUTTON */
     fun onSelectedLibrary(view: View) {
         openPhotoLibrary()
     }
     private fun openPhotoLibrary() {
         clearData()
         ImagePicker.create(this).start()
+
     }
 
-    /* BUTTON 2 */
+    /* POINTS BUTTON */
     fun onChoosePoints(view: View) {
         openImageViewer()
+        disablePointsButton()
+        enableStart()
     }
 
     private fun openImageViewer() {
         isActivityEnabled = true
         if (selectedImages.isEmpty() || selectedImages.count() == 1) {
             Toast.makeText(applicationContext,"Please select photos", Toast.LENGTH_SHORT).show()
-
+            disableStart()
         } else {
             val intent = Intent(this, GestureImageView::class.java)
             intent.putExtra("imageUrl", selectedImages[0].path)
@@ -86,6 +91,12 @@ class MainActivity : AppCompatActivity() {
             selectedImages = ImagePicker.getImages(data)
             imagesBitmap.add(BitmapFactory.decodeFile(selectedImages[0].path))
             imagesBitmap.add(BitmapFactory.decodeFile(selectedImages[1].path))
+            if(selectedImages.isEmpty()) {
+                disablePointsButton()
+            }
+            else {
+                enablePointsButtons()
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -95,7 +106,9 @@ class MainActivity : AppCompatActivity() {
         return bitmap
     }
 
+    /* START BUTTON */
     fun onStartMorphing(view: View) {
+        disableStart()
         createMorphers()
         for(i in 0..listMorphers.size-1) {
             listMorphers[i].start()
@@ -121,6 +134,24 @@ class MainActivity : AppCompatActivity() {
 
     fun stopAnimation() {
         handler.removeCallbacksAndMessages(null)
+    }
+
+    fun disablePointsButton() {
+        choosePointsButton?.isEnabled = false
+    }
+
+    fun disableStart() {
+        startButton?.isEnabled = false
+    }
+
+
+
+    fun enablePointsButtons() {
+        choosePointsButton?.isEnabled = true
+    }
+
+    fun enableStart() {
+        startButton?.isEnabled = true
     }
 
     fun clearData() {
