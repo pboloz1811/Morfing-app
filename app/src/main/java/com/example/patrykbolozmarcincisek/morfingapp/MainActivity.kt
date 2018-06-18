@@ -17,6 +17,7 @@ import android.os.AsyncTask
 import android.os.Build
 import android.annotation.TargetApi
 import android.widget.ProgressBar
+import java.util.logging.Logger
 
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var morpher2: Morphing
     lateinit var morpher3: Morphing
     var isActivityEnabled: Boolean? = null
+    var listMorphers: ArrayList<Morphing> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,32 +97,25 @@ class MainActivity : AppCompatActivity() {
 
     fun onStartMorphing(view: View) {
 
-        morpher = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.2)
-        morpher1 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.4)
-        morpher2 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.6)
-        morpher3 = Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.8)
+        createMorphers()
 
-        morpher.start()
-        morpher1.start()
-        morpher2.start()
-        morpher3.start()
+        for(i in 0..listMorphers.size-1) {
+            listMorphers[i].start()
+            listMorphers[i].join()
+        }
 
-        morpher.join()
-        morpher1.join()
-        morpher2.join()
-        morpher3.join()
-
-
-        imagesBitmap.add(1, morpher.finalImageBitmap)
-        imagesBitmap.add(2, morpher1.finalImageBitmap)
-        imagesBitmap.add(3, morpher2.finalImageBitmap)
-        imagesBitmap.add(4, morpher3.finalImageBitmap)
+        for(i in 0..listMorphers.size-1) {
+            imagesBitmap.add(i+1, listMorphers[i].finalImageBitmap)
+        }
 
         nextImage()
     }
 
-
-    // MARK : Animation
+    private fun createMorphers() {
+        for(i in 1..4) {
+            listMorphers.add(Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.2*i))
+        }
+    }
 
     private var currentIndex: Int = 0
     private var startIndex: Int = 0
@@ -129,8 +124,6 @@ class MainActivity : AppCompatActivity() {
 
     fun nextImage() {
         resultImageView?.setImageBitmap(imagesBitmap[currentIndex])
-        val rotateimage = AnimationUtils.loadAnimation(this, R.anim.abc_fade_in)
-        resultImageView?.startAnimation(rotateimage)
         currentIndex++
         Handler().postDelayed(Runnable {
             if (currentIndex > endIndex) {
@@ -139,14 +132,12 @@ class MainActivity : AppCompatActivity() {
             } else {
                 nextImage()
             }
-        }, 500)
+        }, 100)
 
     }
 
     fun previousImage() {
         resultImageView?.setImageBitmap(imagesBitmap[currentIndex])
-        val rotateimage = AnimationUtils.loadAnimation(this, R.anim.abc_fade_in)
-        resultImageView?.startAnimation(rotateimage)
         currentIndex--
         Handler().postDelayed(Runnable {
             if (currentIndex < startIndex) {
@@ -155,7 +146,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 previousImage()
             }
-        }, 500)
+        }, 100)
     }
 
 }
