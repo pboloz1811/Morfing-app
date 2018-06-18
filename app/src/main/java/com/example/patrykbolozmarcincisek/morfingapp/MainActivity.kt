@@ -17,6 +17,8 @@ import android.os.AsyncTask
 import android.os.Build
 import android.annotation.TargetApi
 import android.widget.ProgressBar
+import com.morphing.list1
+import com.morphing.list2
 import java.util.logging.Logger
 
 
@@ -28,10 +30,6 @@ class MainActivity : AppCompatActivity() {
     private var progressBar: ProgressBar? = null
     private var selectedImages = mutableListOf<Image>()
     private var imagesBitmap = mutableListOf<Bitmap>()
-    lateinit var morpher: Morphing
-    lateinit var morpher1: Morphing
-    lateinit var morpher2: Morphing
-    lateinit var morpher3: Morphing
     var isActivityEnabled: Boolean? = null
     var listMorphers: ArrayList<Morphing> = ArrayList()
 
@@ -54,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         openPhotoLibrary()
     }
     private fun openPhotoLibrary() {
+        clearData()
         ImagePicker.create(this).start()
     }
 
@@ -110,14 +109,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun createMorphers() {
-        for(i in 1..4) {
-            listMorphers.add(Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.2*i))
+        for(i in 0..10) {
+            listMorphers.add(Morphing(getImageForUrl(selectedImages[0].path), getImageForUrl(selectedImages[1].path), 0.1*i))
         }
     }
 
     private var currentIndex: Int = 0
     private var startIndex: Int = 0
-    private var endIndex: Int = 5
+    private var endIndex: Int = 11
     private var handler = Handler()
 
     fun stopAnimation() {
@@ -127,6 +126,9 @@ class MainActivity : AppCompatActivity() {
     fun clearData() {
         stopAnimation()
         resultImageView?.setImageResource(0)
+        list1.clear()
+        list2.clear()
+        SwipeFragment.counter = 1
         selectedImages.clear()
         imagesBitmap.clear()
         listMorphers.clear()
