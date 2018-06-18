@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity() {
     fun onChoosePoints(view: View) {
         openImageViewer()
     }
+
     private fun openImageViewer() {
         isActivityEnabled = true
         if (selectedImages.isEmpty() || selectedImages.count() == 1) {
@@ -96,9 +97,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onStartMorphing(view: View) {
-
         createMorphers()
-
         for(i in 0..listMorphers.size-1) {
             listMorphers[i].start()
             listMorphers[i].join()
@@ -107,7 +106,6 @@ class MainActivity : AppCompatActivity() {
         for(i in 0..listMorphers.size-1) {
             imagesBitmap.add(i+1, listMorphers[i].finalImageBitmap)
         }
-
         nextImage()
     }
 
@@ -120,12 +118,24 @@ class MainActivity : AppCompatActivity() {
     private var currentIndex: Int = 0
     private var startIndex: Int = 0
     private var endIndex: Int = 5
+    private var handler = Handler()
 
+    fun stopAnimation() {
+        handler.removeCallbacksAndMessages(null)
+    }
+
+    fun clearData() {
+        stopAnimation()
+        resultImageView?.setImageResource(0)
+        selectedImages.clear()
+        imagesBitmap.clear()
+        listMorphers.clear()
+    }
 
     fun nextImage() {
         resultImageView?.setImageBitmap(imagesBitmap[currentIndex])
         currentIndex++
-        Handler().postDelayed(Runnable {
+        handler.postDelayed(Runnable {
             if (currentIndex > endIndex) {
                 currentIndex--
                 previousImage()
@@ -139,7 +149,7 @@ class MainActivity : AppCompatActivity() {
     fun previousImage() {
         resultImageView?.setImageBitmap(imagesBitmap[currentIndex])
         currentIndex--
-        Handler().postDelayed(Runnable {
+        handler.postDelayed(Runnable {
             if (currentIndex < startIndex) {
                 currentIndex++
                 nextImage()
