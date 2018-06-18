@@ -81,10 +81,9 @@ class Morphing: Thread {
                 }
                 val red = (1 - lambda) * Color.red(pColor) + (lambda * Color.red(qColor))
                 val green = (1 - lambda) * Color.green(pColor) + (lambda * Color.green(qColor))
-                val blue = (1 - lambda) * Color.green(pColor) + (lambda * Color.green(qColor))
+                val blue = (1 - lambda) * Color.blue(pColor) + (lambda * Color.blue(qColor))
                 val color = Color.rgb(red.toInt(), green.toInt(), blue.toInt())
                 finalImageBitmap.setPixel(x,y,color)
-
             }
         }
 
@@ -96,26 +95,24 @@ class Morphing: Thread {
         var spy = 0.0f
         var sqx = 0.0f
         var sqy = 0.0f
-        var fp = 0.0f
-        var fq = 0.0f
+        var f = 0.0f
         for (i in 0..targetPoints.size - 1) {
             val point = targetPoints[i]
-            if (tx.toFloat() == point.tx && ty.toFloat() == point.ty) {
+            if (tx == point.tx.toInt() && ty == point.ty.toInt()) {
                 return Coordinate(point.pPoint.getX(), point.pPoint.getY(), point.qPoint.getX(), point.qPoint.getY())
             }
-            invdp = 1.0f / sqrt((tx - point.tx).pow(2) + (ty - point.ty).pow(2)).pow(2)
-            spx = spx + point.rpx * invdp
-            spy = spy + point.rpy * invdp
-            sqx = sqx + point.rqx * invdp
-            sqy = sqy + point.rqy * invdp
-            fp = fp + invdp
-            fq = fq + invdp
+            invdp = 1.0f / ((tx - point.tx).pow(2) + (ty - point.ty).pow(2))
+            spx += point.rpx * invdp
+            spy += point.rpy * invdp
+            sqx += point.rqx * invdp
+            sqy += point.rqy * invdp
+            f += invdp
         }
-        spx = round(spx/fp+tx)
-        spy = round(spy/fp+ty)
-        sqx = round(sqx/fq+tx)
-        sqy = round(sqy/fq+ty)
-        return Coordinate(spx,spy,sqx,sqy)
+        val px = round(spx/f+tx)
+        val py = round(spy/f+ty)
+        val qx = round(sqx/f+tx)
+        val qy = round(sqy/f+ty)
+        return Coordinate(px,py,qx,qy)
     }
 
 

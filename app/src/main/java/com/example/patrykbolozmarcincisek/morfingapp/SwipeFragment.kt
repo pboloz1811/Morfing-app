@@ -1,4 +1,5 @@
 package com.example.patrykbolozmarcincisek.morfingapp
+import android.graphics.Matrix
 import android.support.v4.app.Fragment
 import android.net.Uri
 import android.os.Bundle
@@ -49,7 +50,8 @@ class SwipeFragment: Fragment() {
 
                     if (SwipeFragment.counter <= MAX_POINTS_1) {
                         Logger.log("POINT 1: " + "X: " + X + " Y: " + Y + " counter: " + SwipeFragment.counter)
-                        list1?.add(Point(X, Y))
+                        val coords = getPointerCoords(imageView, event)
+                        list1?.add(Point(coords[0], coords[1]))
                         counter++
                         if (SwipeFragment.counter == 3) {
                             printArrayToLog(list1, 1)
@@ -59,7 +61,8 @@ class SwipeFragment: Fragment() {
 
                     else if (SwipeFragment.counter > MAX_POINTS_1 && SwipeFragment.counter <= MAX_POINTS_2) {
                         Logger.log("POINT 2: " + "X: " + X + " Y: " + Y + " counter: " + SwipeFragment.counter)
-                        list2?.add(Point(X, Y))
+                        val coords = getPointerCoords(imageView, event)
+                        list2?.add(Point(coords[0], coords[1]))
                         if(SwipeFragment.counter == 6) {
                             printArrayToLog(list2, 2)
                             delegate?.swipeToNext(true, list1, list2)
@@ -74,6 +77,16 @@ class SwipeFragment: Fragment() {
             }
         })
         return view
+    }
+
+    fun getPointerCoords(view: ImageView?, e: MotionEvent): FloatArray {
+        val index = e.actionIndex
+        val coords = floatArrayOf(e.getX(index), e.getY(index))
+        val matrix = Matrix()
+        view?.imageMatrix?.invert(matrix)
+        matrix.postTranslate(view?.scrollX!!.toFloat(), view?.scrollY.toFloat())
+        matrix.mapPoints(coords)
+        return coords
     }
 
     private fun printArrayToLog(listPoints: ArrayList<Point>?, arrayNo: Int) {

@@ -156,18 +156,6 @@ class MainActivity : AppCompatActivity() {
                 previousImage()
             }
         }, 500)
-
     }
-
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB) // API 11
-    fun startMyTask(asyncTask: AsyncTask<*, *, *>) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-            asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
-        else
-            asyncTask.execute()
-    }
-
-
 
 }
